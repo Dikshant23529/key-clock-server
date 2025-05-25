@@ -1,11 +1,16 @@
-# Use official Keycloak image
 FROM quay.io/keycloak/keycloak:24.0.1
 
-# Build Keycloak for development mode
+# Build Keycloak configuration
 RUN /opt/keycloak/bin/kc.sh build
 
-# Expose default Keycloak port
-EXPOSE 8080
+# Set working directory
+WORKDIR /opt/keycloak
 
-# Start Keycloak in development mode (uses H2 and allows env vars for credentials)
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev"]
+# Default port Render expects (change to 10000)
+ENV PORT=10000
+
+# Expose port for Render
+EXPOSE ${PORT}
+
+# Start Keycloak in dev mode with proper port binding
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--http-port=10000"]
