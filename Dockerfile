@@ -6,11 +6,8 @@ RUN /opt/keycloak/bin/kc.sh build
 # Set working directory
 WORKDIR /opt/keycloak
 
-# Default port Render expects (change to 10000)
-ENV PORT=10000
+# Use dynamic port from Render
+EXPOSE 8080
 
-# Expose port for Render
-EXPOSE ${PORT}
-
-# Start Keycloak in dev mode with proper port binding
-ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start-dev", "--http-port=10000"]
+# Use Keycloak in production mode with external DB
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh", "start"]
