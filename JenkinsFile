@@ -1,0 +1,61 @@
+pipleline {
+    agent any
+
+    environment{
+        KEY_CLOCK_IMAGE = 'quay.io/keycloak/keycloak:26.2.5'
+        KC_USERNAME = 'admin'
+        KC_PASSWORD = 'admin'
+    }
+    
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scm
+            }
+        }
+    
+
+        stage('start key clock server') {
+            steps {
+                script {
+                    sh """
+                        docker run -d --name keycloak-test \\
+                        -p 8080:8080 \\
+                        -e KC_BOOTSTRAP_ADMIN_USERNAME=$KC_USERNAME \\
+                        -e KC_BOOTSTRAP_ADMIN_PASSWORD=$KC_PASSWORD \\
+                        $KEYCLOAK_IMAGE start-dev
+          """
+
+          sh "sleep 20"
+                }
+            }
+        }
+
+        stage('Build Java App') {
+            agent {
+                docker {
+                    image 'maven:3.9.6-eclipse-temurin-17'
+                }
+            }
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+
+        stage('Test Java app') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        post {
+            always {
+                echo 'Stopping Keycloak container...'
+                sh 'docker stop keycloak-test || true'
+                sh 'docker rm keycloak-test || true'
+            }
+        }
+    
+
+    }
+}
