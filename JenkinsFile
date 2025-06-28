@@ -46,16 +46,15 @@ pipeline {
             steps {
                 sh 'mvn test'
             }
-        }
+        }   
 
-        post {
+    }
+
+    post {
             always {
                 echo 'Stopping Keycloak container...'
                 sh 'docker stop keycloak-test || true'
                 sh 'docker rm keycloak-test || true'
             }
         }
-    
-
-    }
 }
