@@ -19,7 +19,7 @@ pipeline {
                 script {
                     sh """
                         docker run -d  --name keyclock-test \\
-                        -p 8080:8080 \\
+                        -p 9090:9090 \\
                         -e KC_BOOTSTRAP_ADMIN_USERNAME=$KC_USERNAME \\
                         -e KC_BOOTSTRAP_ADMIN_PASSWORD=$KC_PASSWORD \\
                         $KEY_CLOCK_IMAGE start-dev
