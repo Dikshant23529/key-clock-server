@@ -19,7 +19,7 @@ pipeline {
             steps {
                 script {
                     sh """
-                        docker run -d --name keycloak-test \\
+                        docker run -d  ${env.KEYCLOAK_IMAGE} \\
                         -p 8080:8080 \\
                         -e KC_BOOTSTRAP_ADMIN_USERNAME=$KC_USERNAME \\
                         -e KC_BOOTSTRAP_ADMIN_PASSWORD=$KC_PASSWORD \\
